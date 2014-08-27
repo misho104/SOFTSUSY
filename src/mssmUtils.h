@@ -35,6 +35,9 @@ void generalBcs(MssmSoftsusy & m, const DoubleVector & inputParameters);
 void generalBcs2(MssmSoftsusy & m, const DoubleVector & inputParameters);
 /// non-universal mSUGRA boundary conditions including mH1^2 and mH2^2
 void extendedSugraBcs(MssmSoftsusy & m, const DoubleVector & inputParameters);
+/// CP-safe gravity mediation
+void cpsafeSugraBcs(MssmSoftsusy & m, const DoubleVector & inputParameters);
+double cpsafeSugraBcs_par(const DoubleVector& pars, double m32, int i);
 /// User supplied routine. Inputs m at the unification scale, and uses
 /// inputParameters vector to output m with high energy soft boundary
 /// conditions.

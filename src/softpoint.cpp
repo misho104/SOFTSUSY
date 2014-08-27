@@ -401,6 +401,10 @@ int main(int argc, char *argv[]) {
 		    pars.setEnd(7); sgnMu = 0; 
 		    modelIdent = "splitgmsb";
 		    break;
+                    case 101:
+                      boundaryCondition = &cpsafeSugraBcs;
+                      pars.setEnd(152);
+                      modelIdent = "cpsafe";
 		    default: 
 		      ostringstream ii;
 		      ii << "SOFTSUSY" << SOFTSUSY_VERSION 
@@ -532,6 +536,19 @@ int main(int argc, char *argv[]) {
 			ii << "Didn't understand SUGRA input " << i << endl;
 			break;
 		      } break;
+		    case 101: // CP-safe gravity mediation inputs (for cpsafeSugraBcs)
+		      switch(i) {
+		      case 1:
+                      case 2:
+                        pars(i+4) = d;
+                        pars(i+104) = 1;
+                        break;
+		      default: 
+			ostringstream ii;
+			ii << "Didn't understand CP-safe gravity mediation input " << i << endl;
+			break;
+		      }
+                      break;
 		    case 2: // GMSB inputs
 		      switch(i) {
 		      case 1: pars(3) = d; break;
@@ -790,7 +807,49 @@ int main(int argc, char *argv[]) {
 		      }
 		    }
 		  }
-		}
+
+                  // CP-safe gravity mediation
+                  if (!strcmp(modelIdent, "cpsafe")) {
+                    r = &m;
+                    boundaryCondition = &cpsafeSugraBcs;
+                    if(i == 0){
+                      gaugeUnification = false;
+                      if (fabs(d + 1.0) < EPSTOL) { // setting Minput=-1 should yield MSSM BCs at MSUSY
+                        mgutGuess = 1.0e3;
+                        ewsbBCscale = true;
+                        QEWSB = 1.0;
+                      }else{
+                        mgutGuess = d;
+                      }
+                    }else if(11 <= i and 13 <= i){
+                      throw "A-terms cannot be specified in CP-safe model.";
+                    }else if(23 <= i and 27 <= i){
+                      throw "Alternative EWSB boundary condition is not supported in CP-safe model.";
+                    }else if(( 1 <= i && i <=  3) or i == 21 or i == 22 or
+                             (31 <= i && i <= 36) or (41 <= i && i <= 49)){
+                      pars(i) = d;
+                      pars(100+i) = d;
+                    }else{
+                      ostringstream ii;
+                      ii << "did not understand parameter " << i << " in EXTPAR inputs";
+                      throw ii.str();
+                    }
+                  }
+                }
+                else if (block == "EXTPARDELTA" and !strcmp(modelIdent, "cpsafe")) {
+                  int i; double d; kk >> i >> d;
+                  switch(i){
+                  case 21:
+                  case 22:
+                    pars(i+30) = d;
+                    pars(i+130) = 1;
+                    break;
+                  default:
+                    ostringstream ii;
+                    ii << "did not understand parameter " << i << " in EXTPARDELTA inputs";
+                    throw ii.str();
+                  }
+                }
                 else if (block == "QEXTPAR") {
                   int i; double d; kk >> i >> d;
                   if (susy_model == NMSSM) {
@@ -1212,6 +1271,58 @@ int main(int argc, char *argv[]) {
           
         }
 	else errorCall();
+      }
+
+      // CP-safe gravity mediation
+      if(!strcmp(modelIdent,"cpsafe")){
+        bool minpar_m0 = pars(105) > 0.5, minpar_m12 = pars(106) > 0.5;
+
+        if(susy_model != MSSM or RPVflag or flavourViolation or r->displayAltEwsb()){
+          throw "CP-safe gravity mediation (MODSEL 1 101) cannot be used with RPV, LFV, NMSSM, or AltEwsb.";
+        }
+        if(not minpar_m12){
+          throw "MINPAR 2 (gaugino mass) is required in CP-safe model.";
+        }
+        for(int i=1; i<=3; i++){
+          if(pars(100+i) < 0.5){
+            pars(i)     = pars(6);
+            pars(100+i) = 1;
+          }
+        }
+        if(minpar_m0){
+          for(int i=31; i<=36; i++){
+            if(pars(100+i) < 0.5){
+              pars(i)     = pars(5);
+              pars(100+i) = 1;
+            }
+          }
+          for(int i=41; i<=49; i++){
+            if(pars(100+i) < 0.5){
+              pars(i)     = pars(5);
+              pars(100+i) = 1;
+            }
+          }
+        }
+        for(int i=21; i<=22; i++){
+          bool in_extpar = pars(100+i) > 0.5, in_extpardelta = pars(130+i) > 0.5;
+          if(in_extpar and in_extpardelta){
+            ostringstream ii;
+            ii << "simultanous specification of EXTPAR and EXTPARDELTA for " << i;
+            throw ii.str();
+          }else if(in_extpar or in_extpardelta){
+            // do nothing
+          }else if(minpar_m0){
+            pars(i)     = pars(5)*pars(5);
+            pars(100+i) = 1;
+          }else{
+            pars(30+i)  = 0;
+            pars(130+i) = 1;
+          }
+        }
+        // now, pars( 1- 3) are certainly set,
+        //      pars(21-22) *or* pars(51-52) are certainly set with corresponding frags pars(100+x),
+        // and  pars(31-49) might be set with corresponding flags.
+        // the other are irrerevant and (should be) unused.
       }
 
       /// prepare CKM angles

@@ -91,6 +91,59 @@ void extendedSugraBcs(MssmSoftsusy & m, const DoubleVector & inputParameters) {
   }
 }
 
+// CP-safe gravity mediation: Iwamoto, Yanagida, Yokozaki [1407.4226]
+// B = 2*m32, A0 = 3*m32, where m32 is the gravitino mass.
+void cpsafeSugraBcs(MssmSoftsusy & m, const DoubleVector & inputParameters) {
+  double m32 = 0;
+  if(m.displayM3Squared() > 0 or m.displayM3Squared() < 0){
+    if(m.displaySusyMu() > 0 or m.displaySusyMu() < 0){
+      m32 = m.displayM3Squared() / m.displaySusyMu() / 2;
+    }else{
+      throw;
+    }
+  }
+
+  // gaugino
+  for(int i=1; i<=3; i++) m.setGauginoMass(i, inputParameters.display(i));
+  // A-terms
+  for(int i=1; i<=3; i++){
+    m.setTrilinearElement(UA, i, i, i<3 ? 0 : m.displayYukawaElement(YU, i, i) * 3 * m32);
+    m.setTrilinearElement(DA, i, i, i<3 ? 0 : m.displayYukawaElement(YD, i, i) * 3 * m32);
+    m.setTrilinearElement(EA, i, i, i<3 ? 0 : m.displayYukawaElement(YE, i, i) * 3 * m32);
+  }
+  m.setMh1Squared                (cpsafeSugraBcs_par(inputParameters, m32, 21));
+  m.setMh2Squared                (cpsafeSugraBcs_par(inputParameters, m32, 22));
+  m.setSoftMassElement(mLl, 1, 1, cpsafeSugraBcs_par(inputParameters, m32, 31));
+  m.setSoftMassElement(mLl, 2, 2, cpsafeSugraBcs_par(inputParameters, m32, 32));
+  m.setSoftMassElement(mLl, 3, 3, cpsafeSugraBcs_par(inputParameters, m32, 33));
+  m.setSoftMassElement(mEr, 1, 1, cpsafeSugraBcs_par(inputParameters, m32, 34));
+  m.setSoftMassElement(mEr, 2, 2, cpsafeSugraBcs_par(inputParameters, m32, 35));
+  m.setSoftMassElement(mEr, 3, 3, cpsafeSugraBcs_par(inputParameters, m32, 36));
+  m.setSoftMassElement(mQl, 1, 1, cpsafeSugraBcs_par(inputParameters, m32, 41));
+  m.setSoftMassElement(mQl, 2, 2, cpsafeSugraBcs_par(inputParameters, m32, 42));
+  m.setSoftMassElement(mQl, 3, 3, cpsafeSugraBcs_par(inputParameters, m32, 43));
+  m.setSoftMassElement(mUr, 1, 1, cpsafeSugraBcs_par(inputParameters, m32, 44));
+  m.setSoftMassElement(mUr, 2, 2, cpsafeSugraBcs_par(inputParameters, m32, 45));
+  m.setSoftMassElement(mUr, 3, 3, cpsafeSugraBcs_par(inputParameters, m32, 46));
+  m.setSoftMassElement(mDr, 1, 1, cpsafeSugraBcs_par(inputParameters, m32, 47));
+  m.setSoftMassElement(mDr, 2, 2, cpsafeSugraBcs_par(inputParameters, m32, 48));
+  m.setSoftMassElement(mDr, 3, 3, cpsafeSugraBcs_par(inputParameters, m32, 49));
+}
+
+double cpsafeSugraBcs_par(const DoubleVector& pars, double m32, int i) {
+  if(i == 21 or i == 22){
+    if(pars(130+i) > 0.5){
+      return m32*m32 + pars(30+i);
+    }else if(pars(100+i) > 0.5){
+      return pars(i);
+    }else{
+      throw;
+    }
+  }else{
+    return (pars(100+i) > 0.5) ? signedSqr(pars.display(i)) : m32*m32;
+  }
+}
+
 /// universal mSUGRA boundary conditions
 void sugraBcs(MssmSoftsusy & m, const DoubleVector & inputParameters) {
   double m0 = inputParameters.display(1);
