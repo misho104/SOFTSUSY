@@ -9789,6 +9789,7 @@ void Softsusy<SoftPars>::modselSLHA(ostream & out, const char model[]) {
   if (!strcmp(model, "gmsb")) modsel = 2;
   if (!strcmp(model, "amsb")) modsel = 3;
   if (!strcmp(model, "splitgmsb")) modsel = 4;
+  if (!strcmp(model, "cpsafe")) modsel = 101;
   out << "     1    " << modsel << "   # " << model << "\n"; /// Les Houches
 							    /// accord codes
 }
@@ -10060,6 +10061,57 @@ void Softsusy<SoftPars>::extparSLHA(ostream & out,
 }
 
 template<class SoftPars>
+void Softsusy<SoftPars>::extparSLHA_cpsafe(ostream & out, const DoubleVector & pars, bool ewsbBCscale) {
+  out << "Block EXTPAR               # CP-safe parameters\n";
+  if (ewsbBCscale)
+    out << "     0   -1.00000000e+00   # Set MX=MSUSY\n";
+  else {
+    out << "     0   "; printRow(out, mxBC); out << "   # MX scale\n";
+  }
+
+  for (int i=1; i<=3; i++) {
+    out << "     " << i << "   ";
+    printRow(out, pars.display(i));
+    out << "   # M_" << i << "(MX)" << endl;
+  }
+  std::map<int, std::string> name;
+  name[21] = "mHd^2(MX)";
+  name[22] = "mHu^2(MX)";
+  name[31] = "meL(MX)";
+  name[32] = "mmuL(MX)";
+  name[33] = "mtauL(MX)";
+  name[34] = "meR(MX)";
+  name[35] = "mmuR(MX)";
+  name[36] = "mtauR(MX)";
+  name[41] = "mqL1(MX)";
+  name[42] = "mqL2(MX)";
+  name[43] = "mqL3(MX)";
+  name[44] = "muR(MX)";
+  name[45] = "mcR(MX)";
+  name[46] = "mtR(MX)";
+  name[47] = "mdR(MX)";
+  name[48] = "msR(MX)";
+  name[49] = "mbR(MX)";
+
+  for(int i=21; i<=49; i++){
+    if(pars.display(100+i) > 0.5){
+      out << "    " << i << "   "; printRow(out, pars.display(i)); out << "   # " << name[i] << endl;
+    }
+  }
+
+  bool extpardelta = false;
+  for(int i=21; i<=22; i++){
+    if(pars.display(130+i) > 0.5){
+      if(extpardelta == false){
+        out << "Block EXTPARDELTA          # CP-safe parameters" << endl;
+        extpardelta = true;
+      }
+      out << "    " << i << "   "; printRow(out, pars.display(30+i)); out << "  # " << name[i] << endl;
+    }
+  }
+}
+
+template<class SoftPars>
 void Softsusy<SoftPars>::minparSLHA(ostream & out, const char model [], 
 			      const DoubleVector & pars, double tanb, 
 			      int sgnMu, 
@@ -10105,6 +10157,9 @@ void Softsusy<SoftPars>::minparSLHA(ostream & out, const char model [],
     out << "     2   "; printRow(out, pars.display(1)); out << "   # m3/2" 
 	<< endl;
     printMX = true;
+  }
+  else if (!strcmp(model, "cpsafe")) {
+    extparSLHA_cpsafe(out, pars, ewsbBCscale);
   }
   else 
     if (!strcmp(model, "nonUniversal")) 

@@ -102,6 +102,7 @@ void cpsafeSugraBcs(MssmSoftsusy & m, const DoubleVector & inputParameters) {
       throw;
     }
   }
+  m.setM32(m32);
 
   // gaugino
   for(int i=1; i<=3; i++) m.setGauginoMass(i, inputParameters.display(i));

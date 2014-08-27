@@ -25,6 +25,7 @@
 #include <cstring>
 #include <cstdlib>
 #include <cmath>
+#include <map>
 #include "def.h"
 #include "utils.h"
 #include "numerics.h"
@@ -1203,6 +1204,8 @@ public:
   /// EXTPAR block of SLHA
   virtual void extparSLHA(ostream & out, const DoubleVector & pars, 
 			  bool ewsbBCscale);
+  virtual void extparSLHA_cpsafe(ostream & out, const DoubleVector & pars, 
+                                 bool ewsbBCscale);
   /// This does the job of the above method, but outputs the Mass block
   void massSLHA(ostream & out);
   /// higgs part of mass block of SLHA
