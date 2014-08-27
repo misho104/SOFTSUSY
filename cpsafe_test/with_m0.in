@@ -1,0 +1,23 @@
+# -*- slha -*-
+Block MODSEL
+    1    101   # CP-safe gravity mediation
+    11     2   # Show two points
+    12    -1   #   and one of them are the GUT scale.
+Block SMINPUTS             # Standard Model inputs
+    1    1.27934000e+02    # alpha_em^(-1)(MZ) SM MSbar
+    2    1.16637000e-05    # G_Fermi
+    3    1.17200000e-01    # alpha_s(MZ)MSbar
+    4    9.11876000e+01    # MZ(pole)
+    5    4.18000000e+00    # mb(mb)
+    6    1.73300000e+02    # Mtop(pole)
+    7    1.77682000e+00    # Mtau(pole)
+Block MINPAR
+    1    550               # m0
+    2    400               # m1/2
+    3     10               # tanb
+    4      1               # sign mu = +
+Block SOFTSUSY
+    1   1.000000000e-06 # torelance
+    5   1.010000000e+00 # 2-loop RGE turned on
+    7   2.010000000e+00 # Higgs at 2-loop
+
