@@ -17,6 +17,30 @@ Extension for CP-safe Gravity Mediation by [S. Iwamoto](http://github.com/misho1
  * CP-safe Gravity Mediation
    * Iwamoto, Yanagida, Yokozaki, [arXiv:1407.4226](http://arxiv.org/abs/1407.4226).
 
+### Introduction to git(hub) newbies
+
+```sh
+git clone https://github.com/misho104/SOFTSUSY.git
+cd SOFTSUSY
+
+# Now this is just the original SOFTSUSY 3.5.1.
+
+git checkout cpsafe
+
+# Now you are moved to the branch 'cpsafe'.
+# Then, as usual,
+
+./configure
+make -j8
+
+# Examples are in "cpsafe_test" directory
+
+cd cpsafe_test
+../softpoint.x leshouches < bp_14074226_1.in
+
+# All the information of the modification is documented in readme.md.
+```
+
 ### Usage
 CP-safe gravity mediation can be accessed only by 'leshouches' mode of `softpoint.x`.
 You can choose CP-safe model by setting `MODSEL 1` to `101`, where you cannot activate `MODSEL 3`, `4`, and `6` as RPV, NMSSM, or FLV for the model is not installed.
