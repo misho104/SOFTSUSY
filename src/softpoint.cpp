@@ -405,6 +405,7 @@ int main(int argc, char *argv[]) {
                       boundaryCondition = &cpsafeSugraBcs;
                       pars.setEnd(152);
                       modelIdent = "cpsafe";
+                      break;
 		    default: 
 		      ostringstream ii;
 		      ii << "SOFTSUSY" << SOFTSUSY_VERSION 
@@ -821,9 +822,9 @@ int main(int argc, char *argv[]) {
                       }else{
                         mgutGuess = d;
                       }
-                    }else if(11 <= i and 13 <= i){
+                    }else if(11 <= i and i <= 13){
                       throw "A-terms cannot be specified in CP-safe model.";
-                    }else if(23 <= i and 27 <= i){
+                    }else if(23 <= i and i <= 27){
                       throw "Alternative EWSB boundary condition is not supported in CP-safe model.";
                     }else if(( 1 <= i && i <=  3) or i == 21 or i == 22 or
                              (31 <= i && i <= 36) or (41 <= i && i <= 49)){
