@@ -1191,6 +1191,7 @@ public:
   /// This does the job of the above method, but performs the header and
   /// CHANGES TO 8 SIG FIGS
   void headerSLHA(ostream & out);
+  void spinfoSLHA_cpsafe(ostream & out);
   /// This does the SPINFO block of SLHA
   virtual void spinfoSLHA(ostream & out);
   /// This does the MODSEL block of SLHA

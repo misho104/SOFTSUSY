@@ -1,8 +1,10 @@
 # SOFTSUSY3.5.1 SLHA compliant output
 # B.C. Allanach, Comput. Phys. Commun. 143 (2002) 305-331, hep-ph/0104145
+# Extended to support CP-safe gravity mediation by S. Iwamoto
+#   Iwamoto, Yanagida, Yokozaki [1407.4226]
 Block SPINFO          # Program information
-     1    SOFTSUSY    # spectrum calculator
-     2    3.5.1       # version number
+     1    SOFTSUSY+CPsafe    # spectrum calculator
+     2    3.5.1+0.1          # version number
 Block MODSEL  # Select model
      1    101   # cpsafe
 Block SMINPUTS             # Standard Model inputs

@@ -9621,6 +9621,29 @@ void Softsusy<SoftPars>::spinfoSLHA(ostream & out) {
 }
 
 template<class SoftPars>
+void Softsusy<SoftPars>::spinfoSLHA_cpsafe(ostream & out) {
+  out << "# Extended to support CP-safe gravity mediation by S. Iwamoto" << endl
+      << "#   Iwamoto, Yanagida, Yokozaki [1407.4226]" << endl;
+  out << "Block SPINFO          # Program information\n"
+      << "     1    SOFTSUSY+CPsafe    # spectrum calculator\n";
+  out << "     2    " << SOFTSUSY_VERSION << "+" << CPSAFE_VERSION << "          # version number\n";
+  if (displayProblem().noConvergence)
+    out << "     3   Possible problem: Not achieved desired accuracy of "
+	<< TOLERANCE << "- got " 
+	<< fracDiff << endl;
+  if (displayProblem().inaccurateHiggsMass)
+    out << "     3   # Warning: Higgs masses are very inaccurate at this point.\n";
+  int posj = 0, posi = 0; double mass = 0.;
+  int temp = lsp(mass, posi, posj);
+  if (temp != 0 && temp != -1) {
+    out << "     3   # Warning: " << recogLsp(temp, posj);
+    out << " LSP" << endl;
+  }
+  if (displayProblem().testSeriousProblem()) 
+    out << "     4   Point invalid: " << displayProblem() << endl;
+}
+
+template<class SoftPars>
 void Softsusy<SoftPars>::softsusySLHA(ostream & out) {
   out << "# SOFTSUSY-specific non SLHA information:\n";
   out << "# MIXING=" << MIXING << " Desired accuracy=" << TOLERANCE << " Achieved accuracy=" << displayFracDiff() << endl;
@@ -10202,7 +10225,11 @@ void Softsusy<SoftPars>::lesHouchesAccordOutput(ostream & out, const char model[
   }
   int nn = out.precision();
   headerSLHA(out);
-  spinfoSLHA(out);
+  if(!strcmp(model, "cpsafe")){
+    spinfoSLHA_cpsafe(out);
+  }else{
+    spinfoSLHA(out);
+  }
   modselSLHA(out, model);
   sminputsSLHA(out); 
   minparSLHA(out, model, pars, tanb, sgnMu, ewsbBCscale);

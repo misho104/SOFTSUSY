@@ -19,6 +19,7 @@
 #include <cmath>
 namespace softsusy{
   const char SOFTSUSY_VERSION[] = "3.5.1";
+  const char CPSAFE_VERSION[]   = "0.1";
 
   /// uncomment if you want checking of vector/matrices bounds: slows code
   /// down. It also now checks over/underflows in matrix multiplication etc
