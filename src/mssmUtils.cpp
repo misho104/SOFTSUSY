@@ -132,12 +132,10 @@ void cpsafeSugraBcs(MssmSoftsusy & m, const DoubleVector & inputParameters) {
 
 double cpsafeSugraBcs_par(const DoubleVector& pars, double m32, int i) {
   if(i == 21 or i == 22){
-    if(pars(130+i) > 0.5){
-      return m32*m32 + pars(30+i);
-    }else if(pars(100+i) > 0.5){
+    if(pars(100+i) > 0.5){
       return pars(i);
     }else{
-      throw;
+      return m32*m32 + (pars(130+i) > 0.5 ? pars(30+i) : 0);
     }
   }else{
     return (pars(100+i) > 0.5) ? signedSqr(pars.display(i)) : m32*m32;

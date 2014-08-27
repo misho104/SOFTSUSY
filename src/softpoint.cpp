@@ -1314,13 +1314,10 @@ int main(int argc, char *argv[]) {
           }else if(minpar_m0){
             pars(i)     = pars(5)*pars(5);
             pars(100+i) = 1;
-          }else{
-            pars(30+i)  = 0;
-            pars(130+i) = 1;
           }
         }
         // now, pars( 1- 3) are certainly set,
-        //      pars(21-22) *or* pars(51-52) are certainly set with corresponding frags pars(100+x),
+        //      pars(21-22) *or* pars(51-52) might be set with corresponding frags pars(100+x),
         // and  pars(31-49) might be set with corresponding flags.
         // the other are irrerevant and (should be) unused.
       }
